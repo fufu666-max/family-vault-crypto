@@ -173,7 +173,7 @@ contract EncryptedDebtRegister is SepoliaConfig {
         require(ids.length == statuses.length, "Arrays length mismatch");
         require(ids.length <= 50, "Too many updates");
 
-        for (uint256 i = 0; i <= ids.length; i++) { // Bug: off-by-one error
+        for (uint256 i = 0; i < ids.length; i++) {
             DebtRecord storage record = debts[ids[i]];
             require(record.exists, "No record");
             require(record.submitter == msg.sender, "Not your debt");
