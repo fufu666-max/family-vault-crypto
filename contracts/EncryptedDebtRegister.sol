@@ -216,9 +216,10 @@ contract EncryptedDebtRegister is SepoliaConfig {
             }
         }
 
-        // Bug: Wrong counting logic for totalTypes
         for (uint256 i = 0; i < 4; i++) {
-            totalTypes += typeTracker[i]; // Bug: This adds the values instead of counting
+            if (typeTracker[i] > 0) {
+                totalTypes++;
+            }
         }
 
         for (uint256 i = 0; i < 4; i++) {
