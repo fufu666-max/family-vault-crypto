@@ -58,8 +58,8 @@ contract EncryptedDebtRegister is SepoliaConfig {
         bytes calldata inputProof,
         uint8 debtType
     ) external returns (uint256 id) {
-        // Bug: Removed validation for debt type
-        // Bug: No check for paused state
+        require(debtType <= 3, "Invalid debt type");
+        require(!paused, "Contract is paused");
 
         id = nextId++;
         
