@@ -39,6 +39,10 @@ export function DebtList() {
   const [status, setStatus] = useState("");
   const [filterType, setFilterType] = useState<number | "all">("all");
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<"timestamp" | "amount">("timestamp");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const itemsPerPage = 10;
 
   const loadDebts = async () => {
     if (!address || !CONTRACT_ADDRESS) {
@@ -298,6 +302,46 @@ export function DebtList() {
               <option value="inactive">Inactive Only</option>
             </select>
           </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label style={{ fontSize: "14px", fontWeight: "600", color: "#374151" }}>
+              Sort by
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as "timestamp" | "amount")}
+              style={{
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                fontSize: "14px",
+                background: "white",
+              }}
+            >
+              <option value="timestamp">Date</option>
+              <option value="amount">Amount</option>
+            </select>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label style={{ fontSize: "14px", fontWeight: "600", color: "#374151" }}>
+              Order
+            </label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+              style={{
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                fontSize: "14px",
+                background: "white",
+              }}
+            >
+              <option value="desc">Newest First</option>
+              <option value="asc">Oldest First</option>
+            </select>
+          </div>
         </div>
       )}
 
@@ -316,13 +360,31 @@ export function DebtList() {
         </div>
       ) : (
         <div style={{ display: "grid", gap: "16px" }}>
-          {debts
-            .filter((debt) => {
-              if (filterType !== "all" && debt.debtType !== filterType) return false;
-              if (filterStatus === "active" && !debt.isActive) return false;
-              if (filterStatus === "inactive" && debt.isActive) return false;
-              return true;
-            })
+          {(() => {
+            const filteredDebts = debts
+              .filter((debt) => {
+                if (filterType !== "all" && debt.debtType !== filterType) return false;
+                if (filterStatus === "active" && !debt.isActive) return false;
+                if (filterStatus === "inactive" && debt.isActive) return false;
+                return true;
+              })
+              .sort((a, b) => {
+                if (sortBy === "timestamp") {
+                  const aTime = Number(a.timestamp);
+                  const bTime = Number(b.timestamp);
+                  return sortOrder === "desc" ? bTime - aTime : aTime - bTime;
+                } else {
+                  const aAmount = a.decryptedAmount ? Number(a.decryptedAmount) : 0;
+                  const bAmount = b.decryptedAmount ? Number(b.decryptedAmount) : 0;
+                  return sortOrder === "desc" ? bAmount - aAmount : aAmount - bAmount;
+                }
+              });
+
+            const totalPages = Math.ceil(filteredDebts.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedDebts = filteredDebts.slice(startIndex, startIndex + itemsPerPage);
+
+            return paginatedDebts;
             .map((debt) => {
             const typeInfo = DEBT_TYPE_LABELS[debt.debtType] || {
               label: "Unknown",
@@ -436,7 +498,68 @@ export function DebtList() {
                 )}
               </div>
             );
-          })}
+          })()}
+
+          {/* Pagination */}
+          {(() => {
+            const filteredDebts = debts
+              .filter((debt) => {
+                if (filterType !== "all" && debt.debtType !== filterType) return false;
+                if (filterStatus === "active" && !debt.isActive) return false;
+                if (filterStatus === "inactive" && debt.isActive) return false;
+                return true;
+              });
+
+            const totalPages = Math.ceil(filteredDebts.length / itemsPerPage);
+
+            if (totalPages <= 1) return null;
+
+            return (
+              <div
+                style={{
+                  marginTop: "24px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  style={{
+                    padding: "8px 12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "6px",
+                    background: currentPage === 1 ? "#f3f4f6" : "white",
+                    cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  Previous
+                </button>
+
+                <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <button
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  style={{
+                    padding: "8px 12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "6px",
+                    background: currentPage === totalPages ? "#f3f4f6" : "white",
+                    cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  Next
+                </button>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
