@@ -83,7 +83,9 @@ export function DebtList() {
     }
   };
 
-  const decryptDebt = async (debtId: bigint) => {
+  const decryptDebt = async (debtId: bigint, retryCount: number = 0) => {
+    const maxRetries = 2;
+
     if (!instance || fhevmStatus !== "ready" || !address || !CONTRACT_ADDRESS || !walletClient) {
       setStatus("Encryption system not ready");
       return;
@@ -165,11 +167,20 @@ export function DebtList() {
         )
       );
     } catch (error: any) {
+      console.error(`Decryption attempt ${retryCount + 1} failed:`, error);
+
+      if (retryCount < maxRetries) {
+        console.log(`Retrying decryption in 2 seconds... (attempt ${retryCount + 2}/${maxRetries + 1})`);
+        setTimeout(() => {
+          decryptDebt(debtId, retryCount + 1);
+        }, 2000);
+        return;
+      }
+
       setStatus(`Error decrypting: ${error.message}`);
       setDebts((prev) =>
         prev.map((d) => (d.id === debtId ? { ...d, isDecrypting: false } : d))
       );
-      console.error(error);
     }
   };
 
