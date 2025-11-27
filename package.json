@@ -81,7 +81,8 @@
     "deploy:sepolia": "npm run compile && hardhat deploy --network sepolia",
     "verify:sepolia": "hardhat verify --network sepolia",
     "accounts": "hardhat accounts",
-    "fhevm:setup": "hardhat fhevm-setup"
+    "fhevm:setup": "hardhat fhevm-setup",
+    "clean:all": "npm run clean && rimraf ./node_modules ./frontend/node_modules"
   },
   "overrides": {
     "ws@>=7.0.0 <7.5.10": ">=7.5.10",
