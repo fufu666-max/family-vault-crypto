@@ -2,21 +2,31 @@
 
 A privacy-preserving system for recording household debts (loans, credit cards, borrowing) using Fully Homomorphic Encryption (FHE) via the FHEVM protocol by Zama.
 
+## 🌐 Live Demo
+
+**Frontend**: [https://family-green.vercel.app/](https://family-green.vercel.app/)
+
+**Testnet Contract**: [0xf7CcdcDf8bfdf79187832777fB2Eb77a8A3cC6C7](https://sepolia.etherscan.io/address/0xf7CcdcDf8bfdf79187832777fB2Eb77a8A3cC6C7) (Sepolia)
+
 ## Overview
 
 This system allows users to:
 - Record debt amounts and types without exposing sensitive financial information
-- View encrypted debt records
-- Decrypt and view their own debt status locally
+- View encrypted debt records with local decryption capability
+- Decrypt and view their own debt status locally using FHEVM
 - Track debt statistics by type (publicly, without revealing individual amounts)
-- Add descriptions and priority levels to debt records
-- Batch update multiple debt statuses
-- Access emergency pause functionality for security
-- View comprehensive user debt summaries
+- Batch update multiple debt statuses for efficient management
+- Access emergency pause functionality for contract security
+- View comprehensive user debt summaries and statistics
+- Monitor contract health status and global debt metrics
 
 ## 🎥 Demo Video
 
-Check out our demonstration video (`family.mp4`) to see the encrypted debt register in action! The video showcases:
+Check out our demonstration video to see the encrypted debt register in action!
+
+**Video Link**: [Watch Demo Video](https://github.com/MildredHansom/family-vault-crypto/raw/main/family.mp4)
+
+The video showcases:
 - Complete user workflow from debt submission to decryption
 - Privacy-preserving features using FHEVM
 - Real-time statistics and data management
@@ -81,6 +91,27 @@ Check out our demonstration video (`family.mp4`) to see the encrypted debt regis
    npx hardhat test --network sepolia
    ```
 
+## 🚀 Deployment Information
+
+### Current Deployments
+
+| Network   | Contract Address | Frontend URL | Status |
+|-----------|------------------|--------------|---------|
+| Sepolia   | [`0xf7CcdcDf8bfdf79187832777fB2Eb77a8A3cC6C7`](https://sepolia.etherscan.io/address/0xf7CcdcDf8bfdf79187832777fB2Eb77a8A3cC6C7) | [https://family-green.vercel.app/](https://family-green.vercel.app/) | ✅ Live |
+| Localhost | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | `http://localhost:3000` | Development |
+
+### Contract Features
+
+The deployed contract includes:
+- ✅ Fully Homomorphic Encryption (FHE) for debt amounts
+- ✅ Encrypted owner addresses using eaddress type
+- ✅ Batch debt status updates (up to 50 at once)
+- ✅ Emergency pause functionality
+- ✅ Global and user-specific debt statistics
+- ✅ Contract health monitoring
+- ✅ Comprehensive input validation
+- ✅ Gas-optimized operations
+
 ## 📁 Project Structure
 
 ```
@@ -91,12 +122,20 @@ encrypted-debt-register/
 ├── tasks/                         # Hardhat custom tasks
 ├── test/                          # Test files
 ├── frontend/                      # Next.js frontend application
+│   ├── app/                       # Next.js app directory
+│   ├── components/                # React components (DebtSubmit, DebtList, etc.)
+│   ├── config/                    # Contract and Wagmi configurations
+│   ├── fhevm/                     # FHEVM integration utilities
+│   └── abi/                       # Generated contract ABIs
+├── deployments/                   # Deployed contract addresses
 ├── hardhat.config.ts              # Hardhat configuration
+├── family.mp4                     # Demo video
 └── package.json                   # Dependencies and scripts
 ```
 
 ## 📜 Available Scripts
 
+### Root Package Scripts
 | Script             | Description              |
 | ------------------ | ------------------------ |
 | `npm run compile`  | Compile all contracts    |
@@ -104,6 +143,17 @@ encrypted-debt-register/
 | `npm run coverage` | Generate coverage report |
 | `npm run lint`     | Run linting checks       |
 | `npm run clean`    | Clean build artifacts    |
+| `npm run deploy:local` | Deploy to localhost     |
+| `npm run deploy:sepolia` | Deploy to Sepolia     |
+| `npm run clean:all` | Clean all dependencies  |
+
+### Frontend Scripts (in frontend/ directory)
+| Script             | Description              |
+| ------------------ | ------------------------ |
+| `npm run dev`      | Start development server |
+| `npm run build`    | Build for production     |
+| `npm run start`    | Start production server  |
+| `npm run lint`     | Run ESLint checks        |
 
 ## 🔐 Debt Types
 
@@ -191,14 +241,6 @@ chore: maintenance tasks
 - **Community**: [Zama Discord](https://discord.gg/zama)
 
 ---
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our contribution guidelines and ensure all commits follow conventional commit standards.
-
-## 📄 License
-
-This project is licensed under the BSD-3-Clause-Clear License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
