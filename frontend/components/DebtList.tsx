@@ -508,6 +508,7 @@ export function DebtList() {
                 )}
               </div>
             );
+            });
           })()}
 
           {/* Pagination */}
